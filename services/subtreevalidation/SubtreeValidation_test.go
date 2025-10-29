@@ -276,7 +276,7 @@ func TestServer_prepareTxsPerLevel(t *testing.T) {
 			{
 				name:             "Block1",
 				blockFilePath:    "../legacy/testdata/00000000000000000ad4cd15bbeaf6cb4583c93e13e311f9774194aadea87386.bin",
-				expectedLevels:   15,
+				expectedLevels:   16,
 				expectedTxMapLen: 563,
 			},
 		}
@@ -352,7 +352,7 @@ func TestServer_prepareTxsPerLevel(t *testing.T) {
 
 		maxLevel, blockTXsPerLevel, err := s.prepareTxsPerLevel(context.Background(), transactions)
 		require.NoError(t, err)
-		assert.Equal(t, uint32(330), maxLevel)
+		assert.Equal(t, uint32(331), maxLevel)
 
 		allParents := 0
 
