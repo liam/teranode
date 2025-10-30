@@ -684,9 +684,9 @@ func TestPrepareTxsPerLevel(t *testing.T) {
 		maxLevel, txsPerLevel, err := server.prepareTxsPerLevel(context.Background(), missingTxs)
 		require.NoError(t, err)
 
-		// All independent transactions should be at level 0
-		assert.Equal(t, uint32(0), maxLevel)
-		assert.Len(t, txsPerLevel[0], 2)
+		// Transactions with external parents (inputs not in subtree) are now level 1
+		assert.Equal(t, uint32(1), maxLevel)
+		assert.Len(t, txsPerLevel[1], 2)
 	})
 
 	t.Run("MultiplelevelsWithDependencies", func(t *testing.T) {
@@ -796,7 +796,7 @@ func TestPrepareTxsPerLevel(t *testing.T) {
 		// 	}
 		// }
 
-		assert.Equal(t, uint32(12), maxLevel)
+		assert.Equal(t, uint32(13), maxLevel)
 		assert.NotNil(t, txsPerLevel)
 
 		// get the level of "0f3a71a9441084a263d0c7c18ea536793c93da0a50666d41ee0dc8ec07b7eced" (child)
