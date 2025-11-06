@@ -850,8 +850,9 @@ func (u *BlockValidation) setTxMinedStatus(ctx context.Context, blockHash *chain
 		}
 	}
 
-	// get all ancestor block Ids without depth limit to ensure duplicate transaction detection
-	if ids, err = u.blockchainClient.GetBlockHeaderIDs(ctx, blockHash, math.MaxUint64); err != nil || len(ids) == 0 {
+	// get all ancestor block ids without depth limit to ensure duplicate transaction detection
+	// use math.MaxInt32 (2.1 billion blocks) which is effectively unlimited for blockchain purposes
+	if ids, err = u.blockchainClient.GetBlockHeaderIDs(ctx, blockHash, math.MaxInt32); err != nil || len(ids) == 0 {
 		if err != nil {
 			return errors.NewServiceError("[setTxMined][%s] failed to get block header ids", blockHash.String(), err)
 		}
