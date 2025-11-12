@@ -239,6 +239,7 @@ type BlockAssemblySettings struct {
 	DifficultyCache                     bool
 	UseDynamicSubtreeSize               bool
 	MiningCandidateCacheTimeout         time.Duration
+	MiningCandidateSmartCacheMaxAge     time.Duration
 	BlockchainSubscriptionTimeout       time.Duration
 	ValidateParentChainOnRestart        bool
 	ParentValidationBatchSize           int
