@@ -223,9 +223,9 @@ func NewSettings(alternativeContext ...string) *Settings {
 			BlockchainSubscriptionTimeout:       getDuration("blockassembly_blockchainSubscriptionTimeout", 5*time.Minute, alternativeContext...),
 			ValidateParentChainOnRestart:        getBool("blockassembly_validateParentChainOnRestart", true, alternativeContext...),
 			ParentValidationBatchSize:           getInt("blockassembly_parentValidationBatchSize", 1000, alternativeContext...),
-            // getMiningCandidate timeout settings
-            GetMiningCandidateSendTimeout:     getDuration("blockassembly_getMiningCandidate_send_timeout", 1*time.Second, alternativeContext...),
-            GetMiningCandidateResponseTimeout: getDuration("blockassembly_getMiningCandidate_response_timeout", 10*time.Second, alternativeContext...),
+			// getMiningCandidate timeout settings
+			GetMiningCandidateSendTimeout:     getDuration("blockassembly_getMiningCandidate_send_timeout", 1*time.Second, alternativeContext...),
+			GetMiningCandidateResponseTimeout: getDuration("blockassembly_getMiningCandidate_response_timeout", 10*time.Second, alternativeContext...),
 		},
 		BlockChain: BlockChainSettings{
 			GRPCAddress:           getString("blockchain_grpcAddress", "localhost:8087", alternativeContext...),

@@ -310,8 +310,12 @@ func (ba *BlockAssembly) runNewSubtreeListener(ctx context.Context, newSubtreeCh
 			currentTxCount := uint32(ba.blockAssembler.TxCount())
 			currentSubtreeCount := ba.blockAssembler.SubtreeCount()
 
-			// Estimate size from subtree (rough approximation)
-			currentSize := newSubtreeRequest.Subtree.SizeInBytes * uint64(currentSubtreeCount)
+			// Calculate actual total size by summing all subtree sizes
+			var currentSize uint64
+			subtrees := ba.blockAssembler.GetChainedSubtrees()
+			for _, st := range subtrees {
+				currentSize += st.SizeInBytes
+			}
 
 			if ba.blockAssembler.shouldInvalidateCache(currentTxCount, currentSize, currentSubtreeCount) {
 				ba.logger.Debugf("[Server] Invalidating cache: significant change detected (txs=%d, size=%d, subtrees=%d)",
