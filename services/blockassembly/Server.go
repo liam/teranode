@@ -750,7 +750,7 @@ func (ba *BlockAssembly) AddTx(ctx context.Context, req *blockassembly_api.AddTx
 	}
 
 	if !ba.settings.BlockAssembly.Disabled {
-		ba.blockAssembler.AddTx(subtreepkg.SubtreeNode{
+		ba.blockAssembler.AddTx(subtreepkg.Node{
 			Hash:        chainhash.Hash(req.Txid),
 			Fee:         req.Fee,
 			SizeInBytes: req.Size,
@@ -845,7 +845,7 @@ func (ba *BlockAssembly) AddTxBatch(ctx context.Context, batch *blockassembly_ap
 
 		// create the subtree node
 		if !ba.settings.BlockAssembly.Disabled {
-			ba.blockAssembler.AddTx(subtreepkg.SubtreeNode{
+			ba.blockAssembler.AddTx(subtreepkg.Node{
 				Hash:        chainhash.Hash(req.Txid),
 				Fee:         req.Fee,
 				SizeInBytes: req.Size,

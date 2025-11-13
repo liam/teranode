@@ -266,7 +266,7 @@ func NewSettings(alternativeContext ...string) *Settings {
 			IsParentMinedRetryBackoffDuration:         getDuration("blockvalidation_isParentMined_retry_backoff_duration", 20*time.Millisecond, alternativeContext...),
 			SubtreeGroupConcurrency:                   getInt("blockvalidation_subtreeGroupConcurrency", 1, alternativeContext...),
 			BlockFoundChBufferSize:                    getInt("blockvalidation_blockFoundCh_buffer_size", 1000, alternativeContext...),
-			CatchupChBufferSize:                       getInt("blockvalidation_catchupCh_buffer_size", 10, alternativeContext...),
+			CatchupChBufferSize:                       getInt("blockvalidation_catchupCh_buffer_size", 100, alternativeContext...),
 			UseCatchupWhenBehind:                      getBool("blockvalidation_useCatchupWhenBehind", false, alternativeContext...),
 			CatchupConcurrency:                        getInt("blockvalidation_catchupConcurrency", max(4, runtime.NumCPU()/2), alternativeContext...),
 			ValidationWarmupCount:                     getInt("blockvalidation_validation_warmup_count", 128, alternativeContext...),
@@ -276,6 +276,7 @@ func NewSettings(alternativeContext ...string) *Settings {
 			CheckSubtreeFromBlockRetryBackoffDuration: getDuration("blockvalidation_check_subtree_from_block_retry_backoff_duration", 30*time.Second),
 			SecretMiningThreshold:                     getUint32("blockvalidation_secret_mining_threshold", uint32(params.CoinbaseMaturity-1), alternativeContext...), // golint:nolint
 			PreviousBlockHeaderCount:                  getUint64("blockvalidation_previous_block_header_count", 100, alternativeContext...),
+			MaxBlocksBehindBlockAssembly:              getInt("blockvalidation_maxBlocksBehindBlockAssembly", 20, alternativeContext...),
 			// Catchup configuration
 			CatchupMaxRetries:            getInt("blockvalidation_catchup_max_retries", 3, alternativeContext...),
 			CatchupIterationTimeout:      getInt("blockvalidation_catchup_iteration_timeout", 30, alternativeContext...),
@@ -288,7 +289,7 @@ func NewSettings(alternativeContext ...string) *Settings {
 			// Block fetching configuration
 			FetchLargeBatchSize:             getInt("blockvalidation_fetch_large_batch_size", 100, alternativeContext...),
 			FetchNumWorkers:                 getInt("blockvalidation_fetch_num_workers", 16, alternativeContext...),
-			FetchBufferSize:                 getInt("blockvalidation_fetch_buffer_size", 500, alternativeContext...),
+			FetchBufferSize:                 getInt("blockvalidation_fetch_buffer_size", 50, alternativeContext...),
 			SubtreeFetchConcurrency:         getInt("blockvalidation_subtree_fetch_concurrency", 8, alternativeContext...),
 			ExtendTransactionTimeout:        getDuration("blockvalidation_extend_transaction_timeout", 120*time.Second, alternativeContext...),
 			GetBlockTransactionsConcurrency: getInt("blockvalidation_get_block_transactions_concurrency", 64, alternativeContext...),
@@ -387,10 +388,6 @@ func NewSettings(alternativeContext ...string) *Settings {
 			ForceSyncPeer:         getString("p2p_force_sync_peer", "", alternativeContext...),
 			NodeStatusTopic:       getString("p2p_node_status_topic", "", alternativeContext...),
 			SharePrivateAddresses: getBool("p2p_share_private_addresses", true, alternativeContext...),
-			// Peer health checker configuration
-			PeerHealthCheckInterval:       getDuration("p2p_health_check_interval", 30*time.Second, alternativeContext...),
-			PeerHealthHTTPTimeout:         getDuration("p2p_health_http_timeout", 5*time.Second, alternativeContext...),
-			PeerHealthRemoveAfterFailures: getInt("p2p_health_remove_after_failures", 3, alternativeContext...),
 			// DHT configuration
 			DHTMode:            getString("p2p_dht_mode", "server", alternativeContext...),
 			DHTCleanupInterval: getDuration("p2p_dht_cleanup_interval", 24*time.Hour, alternativeContext...),
