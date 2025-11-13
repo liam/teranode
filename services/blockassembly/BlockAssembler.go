@@ -1173,7 +1173,7 @@ func (b *BlockAssembler) GetMiningCandidate(ctx context.Context) (*model.MiningC
 		// Return stale cache if available rather than blocking
 		// Miners can work with slightly stale data during high load
 		if b.cachedCandidate.candidate != nil &&
-			time.Since(b.cachedCandidate.lastUpdate) < 30*time.Second {
+			time.Since(b.cachedCandidate.lastUpdate) < b.settings.BlockAssembly.MiningCandidateSmartCacheMaxAge {
 			candidate := b.cachedCandidate.candidate
 			subtrees := b.cachedCandidate.subtrees
 			b.cachedCandidate.mu.RUnlock()
@@ -1196,7 +1196,7 @@ func (b *BlockAssembler) GetMiningCandidate(ctx context.Context) (*model.MiningC
 			return b.GetMiningCandidate(ctx)
 		case <-ctx.Done():
 			return nil, nil, ctx.Err()
-		case <-time.After(5 * time.Second):
+		case <-time.After(b.settings.BlockAssembly.GetMiningCandidateResponseTimeout):
 			// Timeout waiting for generation, try again
 			return b.GetMiningCandidate(ctx)
 		}
@@ -1210,7 +1210,7 @@ func (b *BlockAssembler) GetMiningCandidate(ctx context.Context) (*model.MiningC
 	if b.cachedCandidate.generating {
 		// Return stale cache if available (same logic as above)
 		if b.cachedCandidate.candidate != nil &&
-			time.Since(b.cachedCandidate.lastUpdate) < 30*time.Second {
+			time.Since(b.cachedCandidate.lastUpdate) < b.settings.BlockAssembly.MiningCandidateSmartCacheMaxAge {
 			candidate := b.cachedCandidate.candidate
 			subtrees := b.cachedCandidate.subtrees
 			b.cachedCandidate.mu.Unlock()
@@ -1231,7 +1231,7 @@ func (b *BlockAssembler) GetMiningCandidate(ctx context.Context) (*model.MiningC
 			return b.GetMiningCandidate(ctx)
 		case <-ctx.Done():
 			return nil, nil, ctx.Err()
-		case <-time.After(5 * time.Second):
+		case <-time.After(b.settings.BlockAssembly.GetMiningCandidateResponseTimeout):
 			return b.GetMiningCandidate(ctx)
 		}
 	}
@@ -1259,13 +1259,13 @@ func (b *BlockAssembler) GetMiningCandidate(ctx context.Context) (*model.MiningC
 		close(responseCh)
 		// context cancelled, do not send
 		return nil, nil, ctx.Err()
-	case <-time.After(1 * time.Second):
+	case <-time.After(b.settings.BlockAssembly.GetMiningCandidateSendTimeout):
 		return nil, nil, errors.NewServiceError("timeout sending mining candidate request")
 	case b.miningCandidateCh <- responseCh:
 		// sent successfully
 	}
 
-	// wait for 10 seconds for the response
+	// wait for response with timeout
 	var candidate *model.MiningCandidate
 
 	var subtrees []*subtree.Subtree
@@ -1277,7 +1277,7 @@ func (b *BlockAssembler) GetMiningCandidate(ctx context.Context) (*model.MiningC
 		// context cancelled, do not send
 		close(responseCh)
 		err = ctx.Err()
-	case <-time.After(10 * time.Second):
+	case <-time.After(b.settings.BlockAssembly.GetMiningCandidateResponseTimeout):
 		// make sure to close the channel, otherwise the for select will hang, because no one is reading from it
 		close(responseCh)
 
